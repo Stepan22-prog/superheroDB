@@ -38,8 +38,10 @@ export class SuperheroesService {
       take: numberOfItems,
     });
 
+    const numberOfPages = Math.ceil(numberOfSuperHeroes / numberOfItems);
+
     return {
-      numberOfPages: numberOfSuperHeroes / numberOfItems,
+      numberOfPages,
       data: superheroes,
     };
   }
@@ -61,8 +63,8 @@ export class SuperheroesService {
     });
   }
 
-  remove(id: string) {
-    this.prisma.superhero.delete({
+  async remove(id: string) {
+    await this.prisma.superhero.delete({
       where: {
         id,
       },
