@@ -3,6 +3,9 @@ import { CreateSuperheroDto } from './dto/create-superhero.dto';
 import { UpdateSuperheroDto } from './dto/update-superhero.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
+const STORAGE_URL =
+  process.env.IMAGE_STORAGE_PROVIDER + process.env.IMAGE_BUCKET_NAME;
+
 @Injectable()
 export class SuperheroesService {
   constructor(private prisma: PrismaService) {}
@@ -36,16 +39,30 @@ export class SuperheroesService {
     const superheroes = await this.prisma.superhero.findMany({
       skip: (page - 1) * numberOfItems,
       take: numberOfItems,
-      include: {
-        images: true,
+      select: {
+        id: true,
+        nickname: true,
+        images: {
+          select: {
+            url: true,
+          },
+        },
       },
     });
+
+    const transformedSuperheroes = superheroes.map((superhero) => ({
+      id: superhero.id,
+      nickname: superhero.nickname,
+      image: superhero.images[0]
+        ? STORAGE_URL + superhero.images[0].url
+        : STORAGE_URL + 'Superman-costume-action-comics-1000.jpg',
+    }));
 
     const numberOfPages = Math.ceil(numberOfSuperHeroes / numberOfItems);
 
     return {
       numberOfPages,
-      data: superheroes,
+      data: transformedSuperheroes,
     };
   }
 
