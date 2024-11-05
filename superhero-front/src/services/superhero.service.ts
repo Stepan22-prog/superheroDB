@@ -1,4 +1,4 @@
-import { AllSuperheroesResponseType, CreateSuperheroType } from "../types/superhero.type";
+import { AllSuperheroesResponseType, CreateSuperheroType, SuperheroDetailsResponseType } from "../types/superhero.type";
 import { api } from "./api";
 
 class SuperheroService {
@@ -21,7 +21,7 @@ class SuperheroService {
   }
 
   async get(superheroId: string) {
-    return await api.get(`/superheroes/${superheroId}`);
+    return (await api.get<SuperheroDetailsResponseType>(`/superheroes/${superheroId}`)).data;
   }
 
   async delete(superheroId: string) {

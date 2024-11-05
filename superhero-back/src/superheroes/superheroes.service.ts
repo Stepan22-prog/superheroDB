@@ -67,7 +67,7 @@ export class SuperheroesService {
   }
 
   async findOne(id: string) {
-    return this.prisma.superhero.findUnique({
+    const superhero = await this.prisma.superhero.findUnique({
       where: {
         id,
       },
@@ -75,6 +75,13 @@ export class SuperheroesService {
         images: true,
       },
     });
+
+    const response = {
+      ...superhero,
+      images: superhero.images.map((image) => STORAGE_URL + image.url),
+    };
+
+    return response;
   }
 
   async update(id: string, updateSuperheroDto: UpdateSuperheroDto) {
