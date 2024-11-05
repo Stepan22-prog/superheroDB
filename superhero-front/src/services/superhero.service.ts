@@ -1,8 +1,8 @@
-import { SuperheroType } from "../types/superhero.type";
+import { AllSuperheroesResponseType, CreateSuperheroType } from "../types/superhero.type";
 import { api } from "./api";
 
 class SuperheroService {
-  async create(data: SuperheroType, images: FormData) {
+  async create(data: CreateSuperheroType, images: FormData) {
     images.append('data', JSON.stringify(data));
     api.post('/superheroes', images, {
       headers: {
@@ -14,10 +14,10 @@ class SuperheroService {
   async getAll(page: number) {
     const params = new URLSearchParams();
     params.append('page', page.toString());
-    const response = await api.get('/superheroes', {
+    const response = await api.get<AllSuperheroesResponseType>('/superheroes', {
       params,
     });
-    return response;
+    return response.data;
   }
 
   async get(superheroId: string) {
