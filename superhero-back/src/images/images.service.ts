@@ -10,7 +10,7 @@ export class ImagesService {
   ) {}
 
   async uploadOne(image: Express.Multer.File, superheroId: string) {
-    const filename = image.filename + Date.now();
+    const filename = image.originalname + Date.now();
     try {
       await this.googleStorage.uploadFromMemory(filename, image);
     } catch (error) {

@@ -2,9 +2,17 @@ import { AllSuperheroesResponseType, CreateSuperheroType, SuperheroDetailsRespon
 import { api } from "./api";
 
 class SuperheroService {
-  async create(data: CreateSuperheroType, images: FormData) {
-    images.append('data', JSON.stringify(data));
-    api.post('/superheroes', images, {
+  async create(data: CreateSuperheroType, images:  Array<{ preview: string, image: Blob }>) {
+    const formData = new FormData();
+    formData.append('nickname', data.nickname);
+    formData.append('realName', data.realName);
+    formData.append('superpowers', data.superpowers);
+    formData.append('catchPhrase', data.catchPhrase);
+    formData.append('originDescription', data.originDescription);
+
+    images.forEach((image) => formData.append('images', image.image));
+
+    api.post('/superheroes', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }

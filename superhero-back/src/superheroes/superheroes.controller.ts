@@ -13,7 +13,7 @@ import {
 import { SuperheroesService } from './superheroes.service';
 import { CreateSuperheroDto } from './dto/create-superhero.dto';
 import { UpdateSuperheroDto } from './dto/update-superhero.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { ImagesService } from 'src/images/images.service';
 
 @Controller('superheroes')
@@ -24,7 +24,7 @@ export class SuperheroesController {
   ) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('images'))
+  @UseInterceptors(FilesInterceptor('images'))
   async create(
     @UploadedFiles() images: Array<Express.Multer.File>,
     @Body() createSuperheroDto: CreateSuperheroDto,

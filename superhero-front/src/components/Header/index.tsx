@@ -1,5 +1,6 @@
 import { Box, Button, Divider, Typography } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
+import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
@@ -15,7 +16,7 @@ export default function Header() {
         }}
       >
         <Typography variant="h6" sx={{ textTransform: 'uppercase' }}>Superhero</Typography>
-        <Button variant="contained" startIcon={<AddIcon />}>
+        <Button to="/superhero/create" component={Link} variant="contained" startIcon={<AddIcon />}>
           superhero
         </Button>
       </Box>
