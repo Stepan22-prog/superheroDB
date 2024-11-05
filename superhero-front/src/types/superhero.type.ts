@@ -7,7 +7,7 @@ export type CreateSuperheroType = {
 }
 
 export type AllSuperheroesResponseType = {
-  numberOfImages: number;
+  numberOfPages: number;
   data: {
     id: string;
     nickname: string;
