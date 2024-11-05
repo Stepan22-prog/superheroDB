@@ -7,18 +7,33 @@ import {
   Param,
   Delete,
   Query,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { SuperheroesService } from './superheroes.service';
 import { CreateSuperheroDto } from './dto/create-superhero.dto';
 import { UpdateSuperheroDto } from './dto/update-superhero.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ImagesService } from 'src/images/images.service';
 
 @Controller('superheroes')
 export class SuperheroesController {
-  constructor(private readonly superheroesService: SuperheroesService) {}
+  constructor(
+    private readonly superheroesService: SuperheroesService,
+    private readonly imagesService: ImagesService,
+  ) {}
 
   @Post()
-  create(@Body() createSuperheroDto: CreateSuperheroDto) {
-    return this.superheroesService.create(createSuperheroDto);
+  @UseInterceptors(FileInterceptor('images'))
+  async create(
+    @UploadedFiles() images: Array<Express.Multer.File>,
+    @Body() createSuperheroDto: CreateSuperheroDto,
+  ) {
+    const superheroId =
+      await this.superheroesService.create(createSuperheroDto);
+    this.imagesService.uploadMany(images, superheroId);
+
+    return superheroId;
   }
 
   @Get()

@@ -36,6 +36,9 @@ export class SuperheroesService {
     const superheroes = await this.prisma.superhero.findMany({
       skip: (page - 1) * numberOfItems,
       take: numberOfItems,
+      include: {
+        images: true,
+      },
     });
 
     const numberOfPages = Math.ceil(numberOfSuperHeroes / numberOfItems);
@@ -50,6 +53,9 @@ export class SuperheroesService {
     return this.prisma.superhero.findUnique({
       where: {
         id,
+      },
+      include: {
+        images: true,
       },
     });
   }

@@ -29,5 +29,5 @@ model Images {
   id String @id @default(uuid())
   url String
   superheroId String
-  superhero Superhero @relation(fields: [superheroId], references: [id])
+  superhero Superhero @relation(fields: [superheroId], references: [id], onDelete: Cascade)
 }
