@@ -6,9 +6,15 @@ import { Box } from "@mui/material"
 function App() {
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <Box 
+      sx={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        minHeight: '100vh' 
+      }}
+    >
      <Header />
-     <Box sx={{ flex: 'auto' }}>
+     <Box sx={{ flex: 'auto', my: 1 }}>
       <Outlet />
      </Box>
      <Footer />

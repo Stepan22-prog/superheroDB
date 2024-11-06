@@ -15,8 +15,24 @@ export default function Header() {
           mx: 'auto',
         }}
       >
-        <Typography variant="h6" sx={{ textTransform: 'uppercase' }}>Superhero</Typography>
-        <Button to="/superhero/create" component={Link} variant="contained" startIcon={<AddIcon />}>
+        <Typography
+          to="/"
+          component={Link}
+          variant="h6" 
+          sx={{ 
+            textTransform: 'uppercase', 
+            color: 'inherit', 
+            textDecoration: 'none' 
+          }}
+        >
+          Superhero
+        </Typography>
+        <Button 
+          to="/superhero/create" 
+          component={Link} 
+          variant="contained" 
+          startIcon={<AddIcon />}
+        >
           superhero
         </Button>
       </Box>
