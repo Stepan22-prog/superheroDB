@@ -4,11 +4,13 @@ import App from "./App";
 import SuperheroDetails from "./pages/SuperheroDetails";
 import CreateSuperhero from "./pages/CreateSuperhero";
 import EditSuperhero from "./pages/EditSuperhero";
+import ErrorPage from "./pages/Error";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: '/',
