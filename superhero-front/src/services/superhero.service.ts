@@ -39,7 +39,7 @@ class SuperheroService {
   }
 
   async updateInfo(superheroId: string, data: SuperheroType) {
-    api.put(`/superheroes/${superheroId}`, data);
+    return (await api.put<string>(`/superheroes/${superheroId}`, data)).data;
   }
 
   async addImage(image: Blob, superheroId: string) {
