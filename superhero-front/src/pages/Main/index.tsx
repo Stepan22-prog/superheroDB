@@ -1,31 +1,56 @@
 import { Box, Container, Pagination, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
 import { superheroService } from "../../services/superhero.service";
-import { AllSuperheroesResponseType } from "../../types/superhero.type";
 import Card from "../../components/Card";
+import { useEffectQuery } from "../../hooks/useEffectQuery";
+import Loader from "../../components/Loader";
+import Error from "../../components/Error";
+import usePagination from "./usePagination";
+import { useCallback } from "react";
 
 export default function Main() {
-  const [page, setPage] = useState<number>(1);
-  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
-  };
+  const { page, handlePageChange } = usePagination(1);
 
-  const [superheroes, setSuperheroes] = useState<null | AllSuperheroesResponseType>(null);
-  useEffect(() => {
-    async function getData() {
-      const response = await superheroService.getAll(page);
-      setSuperheroes(response);
-    }
-    getData();
-  }, [page]);
+  const getAllSuperheroes = useCallback(() => superheroService.getAll(page), [page])
+
+  const { data, loading, error } = useEffectQuery({
+    query: getAllSuperheroes,
+  });
 
   return (
     <Container>
-      <Typography>All superheroes</Typography>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', width: '100%', gap: 1, }}>{superheroes && superheroes.data.map(superhero => (
-        <Card id={superhero.id} nickname={superhero.nickname} img={superhero.image} />
-      )) }</Box>
-      {superheroes && <Pagination count={superheroes.numberOfPages} page={page} onChange={handleChange} />}
+      <Typography 
+        variant="h5" 
+        component="h1" 
+        sx={{ fontWeight: 600, mb: 1 }}
+      >All superheroes</Typography>
+      {loading && <Loader />}
+      {error && <Error />}
+      {data &&
+        <>
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              flexWrap: 'wrap', 
+              width: '100%', 
+              gap: 2, 
+            }}
+          >
+            {data.data.map(superhero => (
+              <Card 
+                id={superhero.id} 
+                nickname={superhero.nickname} 
+                img={superhero.image} 
+              />
+            ))}
+          </Box>
+          <Pagination 
+            count={data.numberOfPages} 
+            page={page} 
+            onChange={handlePageChange}
+            sx={{ mx: 'auto', mt: 2, width: 'max-content' }}
+          />
+        </>
+      }
     </Container>
   )
 }
