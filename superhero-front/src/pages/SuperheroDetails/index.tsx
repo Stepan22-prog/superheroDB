@@ -6,10 +6,12 @@ import { Carousel } from "react-responsive-carousel";
 import { useEffectQuery } from "../../hooks/useEffectQuery";
 import Loader from "../../components/Loader";
 import Error from "../../components/Error";
-
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { useDeleteSuperhero } from "../../hooks/useDeleteSuperhero";
 import Notification from "../../components/Notification";
+
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+
+import placeholderImage from '../../assets/no-image.jpg';
 
 export default function SuperheroDetails() {
   const { superheroId } = useParams();
@@ -28,16 +30,25 @@ export default function SuperheroDetails() {
       {superheroData && 
         <>
           <Box>
-            <Carousel width={400} thumbWidth={50}>
-              {superheroData.images.map((image) => (
-                <img 
-                  key={image.id} 
-                  src={image.url} 
-                  alt="#" 
-                  style={{ maxHeight: '400px' }} 
-                />
-              ))}
-            </Carousel>
+            {superheroData.images.length === 0 
+            ?
+              <img 
+                src={placeholderImage} 
+                alt="no-image" 
+                style={{ width: '400px' }} 
+              />
+            :
+              <Carousel width={400} thumbWidth={50}>
+                {superheroData.images.map((image) => (
+                  <img 
+                    key={image.id} 
+                    src={image.url} 
+                    alt={superheroData.nickname} 
+                    style={{ maxHeight: '400px' }} 
+                  />
+                ))}
+              </Carousel>
+            }
           </Box>
           <Box>
             <Typography variant="h6"><b>Nickname:</b> {superheroData.nickname}</Typography>

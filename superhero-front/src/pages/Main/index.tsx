@@ -1,4 +1,4 @@
-import { Box, Container, Pagination, Typography } from "@mui/material";
+import { Box, Container, Pagination } from "@mui/material";
 import { superheroService } from "../../services/superhero.service";
 import Card from "../../components/Card";
 import { useEffectQuery } from "../../hooks/useEffectQuery";
@@ -6,6 +6,7 @@ import Loader from "../../components/Loader";
 import Error from "../../components/Error";
 import usePagination from "./usePagination";
 import { useCallback } from "react";
+import PageTitle from "../../components/PageTitle";
 
 export default function Main() {
   const { page, handlePageChange } = usePagination(1);
@@ -18,11 +19,7 @@ export default function Main() {
 
   return (
     <Container>
-      <Typography 
-        variant="h5" 
-        component="h1" 
-        sx={{ fontWeight: 600, mb: 1 }}
-      >All superheroes</Typography>
+      <PageTitle>All Superheroes</PageTitle>
       {loading && <Loader />}
       {error && <Error />}
       {data &&

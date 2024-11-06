@@ -1,91 +1,28 @@
-import { Box, Button, Container, IconButton } from "@mui/material";
-import FormInput from "../../components/Inputs/FormInput";
-import { useForm } from "react-hook-form";
-import ImageUpload from "../../components/ImageUpload";
-import { useState } from "react";
+import { Container } from "@mui/material";
 import { SuperheroType } from "../../types/superhero.type";
 import { superheroService } from "../../services/superhero.service";
-import DeleteIcon from '@mui/icons-material/Delete';
+import useImage from "./useImage";
+import { useSuperheroMutate } from "../../hooks/useSuperheroMutate";
+import ManageSuperhero from "../../components/ManageSuperhero";
+import PageTitle from "../../components/PageTitle";
 
 export default function CreateSuperhero() {
-  const { control, handleSubmit } = useForm<SuperheroType>();
-  const [images, setImages] = useState<[] | Array<{ preview: string, image: Blob }>>([]);
+  const { images, handleAdd, handleDelete } = useImage();
+  const { sendData, isPending, error } = useSuperheroMutate<string>();
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setImages(pervImages => [...pervImages, { preview: URL.createObjectURL(e.target.files[0]), image: e.target.files[0] }]);
-  } 
-
-  function handleDelete(imageLink:string) {
-    setImages(images => images.filter((image) => image.preview !== imageLink))
-  }
-
-  async function sendData(data: SuperheroType) {
-    superheroService.create(data, images);
-  }
+  const onSubmit = (data: SuperheroType) => sendData(() => superheroService.create(data, images));
 
   return (
     <Container maxWidth="md">
-      <Box component="form" onSubmit={handleSubmit(sendData)} mt={2}>
-        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-          {images.length > 0 && images.map((image) => (
-            <Box key={image.preview} width="200px" height="250px" position="relative">
-              <IconButton 
-                color="error"
-                onClick={() => handleDelete(image.preview)}
-                sx={{
-                  borderRadius: '50%',  
-                  position: 'absolute',
-                  top: '3px',
-                  right: '5px'
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
-              <img src={image.preview} />
-            </Box>
-          ))}
-          <ImageUpload handleChange={handleChange} />
-        </Box>
-        <Box display="flex" flexWrap="wrap">
-          <FormInput 
-            control={control}
-            label="Nickname"
-            name="nickname"
-            errorText="Nickname is required and should have at least 2 symbols"
-            sx={{ flex: '49%', mr: 1 }}
-          />
-          <FormInput 
-            control={control}
-            label="Real name"
-            name="realName"
-            errorText="Nickname is required and should have at least 2 symbols"
-            sx={{ flex: '50%' }}
-          />
-          <FormInput 
-            control={control}
-            label="Superpowers"
-            name="superpowers"
-            errorText="Nickname is required and should have at least 2 symbols"
-            sx={{ flex: '49%', mr: 1 }}
-          />
-          <FormInput 
-            control={control}
-            label="Catch phrase"
-            name="catchPhrase"
-            errorText="Nickname is required and should have at least 2 symbols"
-            sx={{ flex: '50%' }}
-          />
-          <FormInput 
-            control={control}
-            label="Origin description"
-            name="originDescription"
-            errorText="Nickname is required and should have at least 2 symbols"
-            multiline
-            sx={{ flex: '100%' }}
-          />
-          <Button type="submit" variant="contained">Create</Button>
-        </Box>
-      </Box>
+      <PageTitle>Create superhero</PageTitle>
+      <ManageSuperhero
+        images={images}
+        handleAdd={handleAdd}
+        handleDelete={(image) => handleDelete(image.url)}
+        isPending={isPending}
+        error={error}
+        onSubmit={onSubmit}
+      />
     </Container>
   )
 }

@@ -2,7 +2,7 @@ import { AllSuperheroesResponseType, SuperheroType, SuperheroDetailsResponseType
 import { api } from "./api";
 
 class SuperheroService {
-  async create(data: SuperheroType, images:  Array<{ preview: string, image: Blob }>) {
+  async create(data: SuperheroType, images:  Array<{ url: string, image: Blob }>) {
     const formData = new FormData();
     formData.append('nickname', data.nickname);
     formData.append('realName', data.realName);
