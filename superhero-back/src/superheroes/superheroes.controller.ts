@@ -55,7 +55,8 @@ export class SuperheroesController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    this.superheroesService.remove(id);
+  async remove(@Param('id') id: string) {
+    await this.imagesService.deleteBySuperheroId(id);
+    await this.superheroesService.remove(id);
   }
 }

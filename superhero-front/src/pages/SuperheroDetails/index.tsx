@@ -1,6 +1,6 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { superheroService } from "../../services/superhero.service";
 import { SuperheroDetailsResponseType } from "../../types/superhero.type";
 import { Carousel } from "react-responsive-carousel";
@@ -28,7 +28,7 @@ export default function SuperheroDetails() {
       <Box>
         {superheroData && (
           <Carousel width={400} thumbWidth={50}>
-            {superheroData.images.map((image) => (<img src={image} alt="#" style={{ maxHeight: '400px' }} />))}
+            {superheroData.images.map((image) => (<img src={image.url} alt="#" style={{ maxHeight: '400px' }} />))}
           </Carousel>
         )}
       </Box>
@@ -40,7 +40,7 @@ export default function SuperheroDetails() {
           <Typography variant="subtitle1"><b>Superpowers:</b> {superheroData.superpowers}</Typography>
           <Typography variant="subtitle1"><b>Catch phrase:</b> {superheroData.catchPhrase}</Typography>
           <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
-            <Button variant="contained">Edit</Button>
+            <Button to={`/superhero/edit/${superheroId}`} component={Link} variant="contained">Edit</Button>
             <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
           </Box>
         </Box>

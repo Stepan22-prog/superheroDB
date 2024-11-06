@@ -99,6 +99,7 @@ export default function EditSuperhero() {
             sx={{ flex: '100%' }}
           />
           <Button type="submit" variant="contained">Update</Button>
+          <Button variant="contained" color="error">Delete</Button>
         </Box>
       </Box>
     </Container>

@@ -48,6 +48,24 @@ export class ImagesService {
     }));
   }
 
+  async deleteBySuperheroId(superheroId: string) {
+    const imagesOfSuperhero = await this.prisma.images.findMany({
+      where: {
+        superheroId,
+      },
+    });
+    await Promise.all(
+      imagesOfSuperhero.map(async (imageOfSuperhero) => {
+        await this.googleStorage.deleteFile(imageOfSuperhero.url);
+      }),
+    );
+    await this.prisma.images.deleteMany({
+      where: {
+        superheroId,
+      },
+    });
+  }
+
   async delete(imageId: string) {
     const deletedImage = await this.prisma.images.delete({
       where: {
