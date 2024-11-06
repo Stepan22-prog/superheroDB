@@ -31,4 +31,5 @@ model Images {
   url String @unique
   superheroId String
   superhero Superhero @relation(fields: [superheroId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 }

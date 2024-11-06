@@ -44,6 +44,9 @@ export class SuperheroesService {
           select: {
             url: true,
           },
+          orderBy: {
+            createdAt: 'asc',
+          },
         },
       },
     });
@@ -68,7 +71,11 @@ export class SuperheroesService {
         id,
       },
       include: {
-        images: true,
+        images: {
+          orderBy: {
+            createdAt: 'asc',
+          },
+        },
       },
     });
 

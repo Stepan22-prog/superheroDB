@@ -42,6 +42,9 @@ export class ImagesService {
         url: true,
         id: true,
       },
+      orderBy: {
+        createdAt: 'asc',
+      },
     });
 
     return images.map((image) => ({
