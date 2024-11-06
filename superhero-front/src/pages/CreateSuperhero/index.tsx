@@ -3,12 +3,12 @@ import FormInput from "../../components/Inputs/FormInput";
 import { useForm } from "react-hook-form";
 import ImageUpload from "../../components/ImageUpload";
 import { useState } from "react";
-import { CreateSuperheroType } from "../../types/superhero.type";
+import { SuperheroType } from "../../types/superhero.type";
 import { superheroService } from "../../services/superhero.service";
 import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function CreateSuperhero() {
-  const { control, handleSubmit } = useForm<CreateSuperheroType>();
+  const { control, handleSubmit } = useForm<SuperheroType>();
   const [images, setImages] = useState<[] | Array<{ preview: string, image: Blob }>>([]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -19,7 +19,7 @@ export default function CreateSuperhero() {
     setImages(images => images.filter((image) => image.preview !== imageLink))
   }
 
-  async function sendData(data: CreateSuperheroType) {
+  async function sendData(data: SuperheroType) {
     superheroService.create(data, images);
   }
 
@@ -28,7 +28,7 @@ export default function CreateSuperhero() {
       <Box component="form" onSubmit={handleSubmit(sendData)} mt={2}>
         <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
           {images.length > 0 && images.map((image) => (
-            <Box width="200px" height="250px" position="relative">
+            <Box key={image.preview} width="200px" height="250px" position="relative">
               <IconButton 
                 color="error"
                 onClick={() => handleDelete(image.preview)}

@@ -1,8 +1,8 @@
-import { AllSuperheroesResponseType, CreateSuperheroType, SuperheroDetailsResponseType } from "../types/superhero.type";
+import { AllSuperheroesResponseType, SuperheroType, SuperheroDetailsResponseType, ImageType } from "../types/superhero.type";
 import { api } from "./api";
 
 class SuperheroService {
-  async create(data: CreateSuperheroType, images:  Array<{ preview: string, image: Blob }>) {
+  async create(data: SuperheroType, images:  Array<{ preview: string, image: Blob }>) {
     const formData = new FormData();
     formData.append('nickname', data.nickname);
     formData.append('realName', data.realName);
@@ -12,11 +12,13 @@ class SuperheroService {
 
     images.forEach((image) => formData.append('images', image.image));
 
-    api.post('/superheroes', formData, {
+    const superheroId = (await api.post<string>('/superheroes', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }
-    })
+    })).data
+
+    return superheroId;
   }
 
   async getAll(page: number) {
@@ -36,7 +38,7 @@ class SuperheroService {
     await api.delete(`/superheroes/${superheroId}`);
   }
 
-  async updateInfo(superheroId: string, data: CreateSuperheroType) {
+  async updateInfo(superheroId: string, data: SuperheroType) {
     api.put(`/superheroes/${superheroId}`, data);
   }
 
@@ -45,7 +47,7 @@ class SuperheroService {
     formData.append('image', image);
     formData.append('superheroId', superheroId);
 
-    return (await api.post<Array<{ id: string, url: string }>>('/images', formData, {
+    return (await api.post<Array<ImageType>>('/images', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }
@@ -53,7 +55,7 @@ class SuperheroService {
   }
 
   async deleteImage(id: string) {
-    return (await api.delete<Array<{ id: string, url: string }>>(`/images/${id}`)).data;
+    return (await api.delete<Array<ImageType>>(`/images/${id}`)).data;
   }
 }
 

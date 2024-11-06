@@ -1,4 +1,4 @@
-export type CreateSuperheroType = {
+export type SuperheroType = {
   nickname: string;
   realName: string;
   originDescription: string;
@@ -15,6 +15,11 @@ export type AllSuperheroesResponseType = {
   }[]
 }
 
+export type ImageType = {
+  id: string; 
+  url: string
+}
+
 export type SuperheroDetailsResponseType = {
   id: string;
   nickname: string;
@@ -22,5 +27,5 @@ export type SuperheroDetailsResponseType = {
   originDescription: string;
   superpowers: string;
   catchPhrase: string;
-  images: Array<{ id: string, url: string }>;
+  images: Array<ImageType>;
 }
