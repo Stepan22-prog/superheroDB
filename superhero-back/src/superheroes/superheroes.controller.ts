@@ -31,7 +31,7 @@ export class SuperheroesController {
   ) {
     const superheroId =
       await this.superheroesService.create(createSuperheroDto);
-    this.imagesService.uploadMany(images, superheroId);
+    await this.imagesService.uploadMany(images, superheroId);
 
     return superheroId;
   }

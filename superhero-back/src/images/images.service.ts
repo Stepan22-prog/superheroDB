@@ -27,8 +27,10 @@ export class ImagesService {
     return this.getAllBySuperheroId(superheroId);
   }
 
-  uploadMany(images: Express.Multer.File[], superheroId: string) {
-    images.forEach((image) => this.uploadOne(image, superheroId));
+  async uploadMany(images: Express.Multer.File[], superheroId: string) {
+    await Promise.all(
+      images.map(async (image) => await this.uploadOne(image, superheroId)),
+    );
   }
 
   async getAllBySuperheroId(superheroId: string) {
