@@ -1,7 +1,8 @@
-import { Button, styled } from "@mui/material";
+import { Button, CircularProgress, styled } from "@mui/material";
 
 type ImageUploadPropType = {
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  loading: boolean;
 }
 
 const VisuallyHiddenInput = styled('input')({
@@ -16,7 +17,7 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-export default function ImageUpload({ handleChange }: ImageUploadPropType) {
+export default function ImageUpload({ handleChange, loading }: ImageUploadPropType) {
   
   return (
     <>
@@ -25,9 +26,10 @@ export default function ImageUpload({ handleChange }: ImageUploadPropType) {
         role={undefined}
         variant="outlined"
         tabIndex={-1}
+        disabled={loading}
         sx={{ height: '250px', width: '200px' }}
       >
-        Upload image
+        {loading ? <CircularProgress /> :'Upload image'}
         <VisuallyHiddenInput
           type="file"
           onChange={handleChange}

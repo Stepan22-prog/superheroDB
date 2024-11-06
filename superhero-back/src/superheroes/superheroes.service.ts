@@ -84,12 +84,13 @@ export class SuperheroesService {
   }
 
   async update(id: string, updateSuperheroDto: UpdateSuperheroDto) {
-    return this.prisma.superhero.update({
+    await this.prisma.superhero.update({
       where: {
         id,
       },
       data: updateSuperheroDto,
     });
+    return id;
   }
 
   async remove(id: string) {

@@ -10,14 +10,14 @@ export class CreateSuperheroDto {
   realName: string;
 
   @IsString()
-  @Length(2, 150)
+  @Length(2, 200)
   originDescription: string;
 
   @IsString()
-  @Length(2, 150)
+  @Length(2, 200)
   superpowers: string;
 
   @IsString()
-  @Length(2, 150)
+  @Length(2, 200)
   catchPhrase: string;
 }

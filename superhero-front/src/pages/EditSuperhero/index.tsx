@@ -19,7 +19,7 @@ export default function EditSuperhero() {
   const { superheroId } = useParams();
   const { control, handleSubmit, setValue } = useForm<SuperheroType>();
   const { 
-    images, handleAddImage, handleDeleteImage, setImages 
+    images, isImageError, isImageModifying, handleAddImage, handleDeleteImage, setImages 
   } = useImageSync(superheroId as string);
 
   const { nickname, loading, error } = useGetData({ 
@@ -41,12 +41,13 @@ export default function EditSuperhero() {
         <>
           <PageTitle>Edit {nickname}</PageTitle>
           <Box component="form" onSubmit={handleSubmit(onSubmit)} mt={2}>
-            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 1 }}>
               {images && images.map((image) => (
                 <Box key={image.id} width="200px" height="250px" position="relative">
                   <IconButton 
                     color="error"
                     onClick={() => handleDeleteImage(image.id)}
+                    disabled={isImageModifying}
                     sx={{
                       borderRadius: '50%',  
                       position: 'absolute',
@@ -59,30 +60,34 @@ export default function EditSuperhero() {
                   <img src={image.url} />
                 </Box>
               ))}
-              <ImageUpload handleChange={handleAddImage} />
+              <ImageUpload loading={isImageModifying} handleChange={handleAddImage} />
             </Box>
-            <Box display="flex" flexWrap="wrap">
-              <SuperheroForm control={control} />
-              <Button 
-                type="submit" 
-                variant="contained"
-                disabled={isUpdatePending}
-              >
-                {isUpdatePending ? 'Updating...' : 'Update'}
-              </Button>
-              <Button 
-                variant="contained" 
-                color="error"
-                disabled={isDeletePending}
-                onClick={handleDelete}
-              >
-                {isDeletePending ? 'Deleting...' : 'Delete' }
-              </Button>
-            </Box>
+            <SuperheroForm control={control} />
+            <Button 
+              type="submit" 
+              variant="contained"
+              disabled={isUpdatePending}
+            >
+              {isUpdatePending ? 'Updating...' : 'Update'}
+            </Button>
+            <Button 
+              variant="contained" 
+              color="error"
+              disabled={isDeletePending}
+              onClick={handleDelete}
+              sx={{ ml: 1 }}
+            >
+              {isDeletePending ? 'Deleting...' : 'Delete' }
+            </Button>
           </Box>
           <Notification
             isOpen={isError || !!mutationError}
             text={mutationError || 'Failed to delete hero. Try again.'}
+            type="error"
+          />
+          <Notification
+            isOpen={!!isImageError}
+            text={isImageError === "upload" ? 'Failed to upload image. Try again.' : 'Failed to delete image. Try again.'}
             type="error"
           />
         </>
