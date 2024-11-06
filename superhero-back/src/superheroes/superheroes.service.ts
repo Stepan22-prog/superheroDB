@@ -51,9 +51,7 @@ export class SuperheroesService {
     const transformedSuperheroes = superheroes.map((superhero) => ({
       id: superhero.id,
       nickname: superhero.nickname,
-      image: superhero.images[0]
-        ? STORAGE_URL + superhero.images[0].url
-        : STORAGE_URL + 'Superman-costume-action-comics-1000.jpg',
+      image: superhero.images[0] && STORAGE_URL + superhero.images[0].url,
     }));
 
     const numberOfPages = Math.ceil(numberOfSuperHeroes / numberOfItems);

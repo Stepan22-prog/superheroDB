@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { ImagesService } from './images.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { CreateImageDto } from './dto/create-image.dto';
 
 @Controller('images')
 export class ImagesController {
@@ -18,9 +19,12 @@ export class ImagesController {
   @UseInterceptors(FileInterceptor('image'))
   async create(
     @UploadedFile() image: Express.Multer.File,
-    @Body() superheroId: { superheroId: string },
+    @Body() createImageDto: CreateImageDto,
   ) {
-    return await this.imagesService.uploadOne(image, superheroId.superheroId);
+    return await this.imagesService.uploadOne(
+      image,
+      createImageDto.superheroId,
+    );
   }
 
   @Delete(':imageId')
