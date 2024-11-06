@@ -3,6 +3,7 @@ import Main from "./pages/Main";
 import App from "./App";
 import SuperheroDetails from "./pages/SuperheroDetails";
 import CreateSuperhero from "./pages/CreateSuperhero";
+import EditSuperhero from "./pages/EditSuperhero";
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ export const router = createBrowserRouter([
       {
         path: '/superhero/create',
         element: <CreateSuperhero />
+      },
+      {
+        path: '/superhero/edit/:superheroId',
+        element: <EditSuperhero />
       },
       {
         path: '/superhero/:superheroId',

@@ -22,5 +22,5 @@ export type SuperheroDetailsResponseType = {
   originDescription: string;
   superpowers: string;
   catchPhrase: string;
-  images: string[];
+  images: Array<{ id: string, url: string }>;
 }

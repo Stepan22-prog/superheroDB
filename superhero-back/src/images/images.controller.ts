@@ -4,7 +4,7 @@ import {
   Delete,
   Param,
   Post,
-  UploadedFiles,
+  UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { ImagesService } from './images.service';
@@ -17,14 +17,14 @@ export class ImagesController {
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   async create(
-    @UploadedFiles() image: Express.Multer.File,
+    @UploadedFile() image: Express.Multer.File,
     @Body() superheroId: { superheroId: string },
   ) {
-    this.imagesService.uploadOne(image, superheroId.superheroId);
+    return await this.imagesService.uploadOne(image, superheroId.superheroId);
   }
 
-  @Delete(':filename')
-  remove(@Param('filename') filename: string) {
-    this.imagesService.delete(filename);
+  @Delete(':imageId')
+  async remove(@Param('imageId') imageId: string) {
+    return await this.imagesService.delete(imageId);
   }
 }

@@ -35,6 +35,26 @@ class SuperheroService {
   async delete(superheroId: string) {
     await api.delete(`/superheroes/${superheroId}`);
   }
+
+  async updateInfo(superheroId: string, data: CreateSuperheroType) {
+    api.put(`/superheroes/${superheroId}`, data);
+  }
+
+  async addImage(image: Blob, superheroId: string) {
+    const formData = new FormData();
+    formData.append('image', image);
+    formData.append('superheroId', superheroId);
+
+    return (await api.post<Array<{ id: string, url: string }>>('/images', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    })).data;
+  }
+
+  async deleteImage(id: string) {
+    return (await api.delete<Array<{ id: string, url: string }>>(`/images/${id}`)).data;
+  }
 }
 
 export const superheroService = new SuperheroService();

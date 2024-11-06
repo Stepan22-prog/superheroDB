@@ -19,6 +19,10 @@ export default function SuperheroDetails() {
     getData();
   }, [superheroId]);
 
+  function handleDelete() {
+    superheroService.delete(superheroId as string);
+  }
+
   return (
     <Container sx={{ display: 'flex', mt: 2, gap: '20px'}}>
       <Box>
@@ -37,7 +41,7 @@ export default function SuperheroDetails() {
           <Typography variant="subtitle1"><b>Catch phrase:</b> {superheroData.catchPhrase}</Typography>
           <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
             <Button variant="contained">Edit</Button>
-            <Button variant="outlined" color="error">Delete</Button>
+            <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
           </Box>
         </Box>
       }

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { STORAGE_URL } from 'src/constants';
 import { GoogleStorageService } from 'src/google-storage/google-storage.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -22,22 +23,38 @@ export class ImagesService {
         url: filename,
       },
     });
+
+    return this.getAllBySuperheroId(superheroId);
   }
 
   uploadMany(images: Express.Multer.File[], superheroId: string) {
     images.forEach((image) => this.uploadOne(image, superheroId));
   }
 
-  async delete(filename: string) {
-    try {
-      await this.googleStorage.deleteFile(filename);
-    } catch (error) {
-      console.log(error);
-    }
-    this.prisma.images.deleteMany({
+  async getAllBySuperheroId(superheroId: string) {
+    const images = await this.prisma.images.findMany({
       where: {
-        url: filename,
+        superheroId,
+      },
+      select: {
+        url: true,
+        id: true,
       },
     });
+
+    return images.map((image) => ({
+      url: STORAGE_URL + image.url,
+      id: image.id,
+    }));
+  }
+
+  async delete(imageId: string) {
+    const deletedImage = await this.prisma.images.delete({
+      where: {
+        id: imageId,
+      },
+    });
+    await this.googleStorage.deleteFile(deletedImage.url);
+    return await this.getAllBySuperheroId(deletedImage.superheroId);
   }
 }

@@ -2,9 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateSuperheroDto } from './dto/create-superhero.dto';
 import { UpdateSuperheroDto } from './dto/update-superhero.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-
-const STORAGE_URL =
-  process.env.IMAGE_STORAGE_PROVIDER + process.env.IMAGE_BUCKET_NAME;
+import { STORAGE_URL } from 'src/constants';
 
 @Injectable()
 export class SuperheroesService {
@@ -78,7 +76,10 @@ export class SuperheroesService {
 
     const response = {
       ...superhero,
-      images: superhero.images.map((image) => STORAGE_URL + image.url),
+      images: superhero.images.map((image) => ({
+        url: STORAGE_URL + image.url,
+        id: image.id,
+      })),
     };
 
     return response;
