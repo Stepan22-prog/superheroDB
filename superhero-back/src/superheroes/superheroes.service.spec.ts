@@ -165,6 +165,28 @@ describe('SuperheroesService', () => {
         data: updateDto,
       });
     });
+
+    it('should throw error if superhero with such nickname already exists', async () => {
+      prismaService.superhero.findMany = jest.fn().mockResolvedValue([
+        {
+          id: '1',
+          nickname: 'Superman',
+          images: {
+            url: 'image1.jpg',
+          },
+        },
+      ]);
+      const updateDto = {
+        id: '1',
+        nickname: 'Superman',
+        realName: 'Clark Kent',
+        originDescription: 'He was born Kal-El on the planet Krypton',
+      };
+
+      await expect(service.update('1', updateDto)).rejects.toThrow(
+        BadRequestException,
+      );
+    });
   });
 
   describe('remove', () => {
