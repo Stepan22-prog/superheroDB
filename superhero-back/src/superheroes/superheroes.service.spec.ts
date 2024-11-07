@@ -42,7 +42,6 @@ describe('SuperheroesService', () => {
       prismaService.superhero.create = jest.fn().mockResolvedValue({ id: '1' });
 
       const createDto = {
-        id: '1',
         nickname: 'Superman',
         realName: 'Clark Kent',
         originDescription: 'He was born Kal-El on the planet Krypton',
