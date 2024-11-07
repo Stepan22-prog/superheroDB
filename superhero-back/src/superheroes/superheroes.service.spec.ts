@@ -156,6 +156,7 @@ describe('SuperheroesService', () => {
   describe('update', () => {
     it('should update the superhero data', async () => {
       const updateDto = { nickname: 'UpdatedName' };
+      prismaService.superhero.findMany = jest.fn().mockResolvedValue([]);
       const result = await service.update('1', updateDto);
 
       expect(result).toBe('1');
