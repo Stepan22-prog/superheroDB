@@ -50,7 +50,9 @@ export class SuperheroesService {
         },
       },
       where: {
-        nickname,
+        nickname: {
+          startsWith: nickname,
+        },
       },
     });
 

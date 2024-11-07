@@ -6,13 +6,15 @@ export type SuperheroType = {
   catchPhrase: string;
 }
 
+export type SuperheroesShortType = {
+  id: string;
+  nickname: string;
+  image: string;
+}
+
 export type AllSuperheroesResponseType = {
   numberOfPages: number;
-  data: {
-    id: string;
-    nickname: string;
-    image: string;
-  }[]
+  data: SuperheroesShortType[]
 }
 
 export type ImageType = {

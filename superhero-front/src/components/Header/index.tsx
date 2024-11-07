@@ -1,6 +1,7 @@
 import { Box, Button, Divider, Typography } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import { Link } from "react-router-dom";
+import Search from "../Search";
 
 export default function Header() {
   return (
@@ -27,6 +28,7 @@ export default function Header() {
         >
           Superhero
         </Typography>
+        <Search />
         <Button 
           to="/superhero/create" 
           component={Link} 

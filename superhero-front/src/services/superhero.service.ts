@@ -21,9 +21,12 @@ class SuperheroService {
     return superheroId;
   }
 
-  async getAll(page: number) {
+  async getAll(page: number, nickname?: string) {
     const params = new URLSearchParams();
     params.append('page', page.toString());
+    if (nickname) {
+      params.append('nickname', nickname);
+    }
     const response = await api.get<AllSuperheroesResponseType>('/superheroes', {
       params,
     });
