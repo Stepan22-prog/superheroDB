@@ -19,7 +19,7 @@ export default function EditSuperhero() {
   const { superheroId } = useParams();
   const { control, handleSubmit, setValue } = useForm<SuperheroType>();
   const { 
-    images, isImageError, isImageModifying, handleAddImage, handleDeleteImage, setImages 
+    images, imageError, isImageModifying, handleAddImage, handleDeleteImage, setImages 
   } = useImageSync(superheroId as string);
 
   const { nickname, loading, error } = useGetData({ 
@@ -86,8 +86,8 @@ export default function EditSuperhero() {
             type="error"
           />
           <Notification
-            isOpen={!!isImageError}
-            text={isImageError === "upload" ? 'Failed to upload image. Try again.' : 'Failed to delete image. Try again.'}
+            isOpen={!!imageError}
+            text={imageError ?? ''}
             type="error"
           />
         </>

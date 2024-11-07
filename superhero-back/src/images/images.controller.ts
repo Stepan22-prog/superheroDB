@@ -2,7 +2,10 @@ import {
   Body,
   Controller,
   Delete,
+  FileTypeValidator,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -18,7 +21,17 @@ export class ImagesController {
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   async create(
-    @UploadedFile() image: Express.Multer.File,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 1000000 }),
+          new FileTypeValidator({
+            fileType: /(image\/(jpeg|png|avif|webp|jpg))/,
+          }),
+        ],
+      }),
+    )
+    image: Express.Multer.File,
     @Body() createImageDto: CreateImageDto,
   ) {
     return await this.imagesService.uploadOne(

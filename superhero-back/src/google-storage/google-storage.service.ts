@@ -19,8 +19,6 @@ export class GoogleStorageService {
       .bucket(this.bucketName)
       .file(filename)
       .save(content.buffer);
-
-    console.log('file was uploaded');
   }
 
   async deleteFile(filename: string) {

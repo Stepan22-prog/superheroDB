@@ -38,7 +38,7 @@ export default function SuperheroDetails() {
                 style={{ width: '400px' }} 
               />
             :
-              <Carousel width={400} thumbWidth={50}>
+              <Carousel width={400} thumbWidth={50} emulateTouch>
                 {superheroData.images.map((image) => (
                   <img 
                     key={image.id} 

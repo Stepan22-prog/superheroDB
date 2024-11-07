@@ -34,6 +34,7 @@ export default function ImageUpload({ handleChange, loading }: ImageUploadPropTy
           type="file"
           onChange={handleChange}
           multiple
+          accept=".jpg, .jpeg, .png, .avif, .webp"
         />
       </Button>
     </>

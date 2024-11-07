@@ -11,7 +11,7 @@ export default function Header() {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          my: 1,
+          my: 1.5,
           maxWidth: '90%',
           mx: 'auto',
         }}

@@ -15,6 +15,8 @@ export default function Card({ id, nickname, img }: CardPropsType) {
         sx={{ height: 250, backgroundSize: 'contain' }}
         image={img ?? placeholderImage}
         title={nickname}
+        component={Link}
+        to={`/superhero/${id}`}
       />
       <CardContent>
         <Typography variant="h5" component="div">

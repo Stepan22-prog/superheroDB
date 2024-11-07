@@ -34,6 +34,7 @@ export default function Main() {
           >
             {data.data.map(superhero => (
               <Card 
+                key={superhero.id}
                 id={superhero.id} 
                 nickname={superhero.nickname} 
                 img={superhero.image} 

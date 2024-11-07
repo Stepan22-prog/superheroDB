@@ -9,6 +9,9 @@ import {
   Query,
   UseInterceptors,
   UploadedFiles,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
 } from '@nestjs/common';
 import { SuperheroesService } from './superheroes.service';
 import { CreateSuperheroDto } from './dto/create-superhero.dto';
@@ -26,7 +29,17 @@ export class SuperheroesController {
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
   async create(
-    @UploadedFiles() images: Array<Express.Multer.File>,
+    @UploadedFiles(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 1000000 }),
+          new FileTypeValidator({
+            fileType: /(image\/(jpeg|png|avif|webp|jpg))/,
+          }),
+        ],
+      }),
+    )
+    images: Array<Express.Multer.File>,
     @Body() createSuperheroDto: CreateSuperheroDto,
   ) {
     const superheroId =

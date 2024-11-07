@@ -96,14 +96,6 @@ export class SuperheroesService {
   }
 
   async update(id: string, updateSuperheroDto: UpdateSuperheroDto) {
-    const isSuperheroExists = await this.findAll({
-      nickname: updateSuperheroDto.nickname,
-    });
-
-    if (isSuperheroExists.data.length > 0) {
-      throw new BadRequestException('Superhero already exists');
-    }
-
     await this.prisma.superhero.update({
       where: {
         id,

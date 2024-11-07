@@ -13,10 +13,9 @@ export function useSuperheroMutate<T>() {
     try {
       const response = await query();
       navigate(`/superhero/${response}`);
-
     } catch (error) {
       console.error(error);
-      setError((error as AxiosError).message);
+      setError((error as AxiosError<{ message: string }>).response?.data.message as string);
     } finally {
       setIsPending(false);
     }
