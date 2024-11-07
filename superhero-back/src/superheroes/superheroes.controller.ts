@@ -37,8 +37,12 @@ export class SuperheroesController {
   }
 
   @Get()
-  findAll(@Query('page') page: string) {
-    return this.superheroesService.findAll(+page, 5);
+  findAll(@Query() params: { page?: string; nickname?: string }) {
+    return this.superheroesService.findAll({
+      page: +params.page,
+      nickname: params.nickname,
+      numberOfItems: 5,
+    });
   }
 
   @Get(':id')

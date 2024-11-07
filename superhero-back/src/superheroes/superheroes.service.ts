@@ -8,20 +8,12 @@ import { STORAGE_URL } from 'src/constants';
 export class SuperheroesService {
   constructor(private prisma: PrismaService) {}
 
-  async findByNickname(nickname: string) {
-    return this.prisma.superhero.findUnique({
-      where: {
-        nickname,
-      },
-    });
-  }
-
   async create(createSuperheroDto: CreateSuperheroDto) {
-    const isSuperheroExists = await this.findByNickname(
-      createSuperheroDto.nickname,
-    );
+    const isSuperheroExists = await this.findAll({
+      nickname: createSuperheroDto.nickname,
+    });
 
-    if (isSuperheroExists) {
+    if (isSuperheroExists.data.length > 0) {
       throw new BadRequestException('Superhero already exists');
     }
 
@@ -32,10 +24,18 @@ export class SuperheroesService {
     return id;
   }
 
-  async findAll(page: number, numberOfItems: number) {
+  async findAll({
+    page = 1,
+    numberOfItems,
+    nickname,
+  }: {
+    page?: number;
+    numberOfItems?: number;
+    nickname?: string;
+  }) {
     const numberOfSuperHeroes = await this.prisma.superhero.count();
     const superheroes = await this.prisma.superhero.findMany({
-      skip: (page - 1) * numberOfItems,
+      skip: (page - 1) * (numberOfItems ?? 0),
       take: numberOfItems,
       select: {
         id: true,
@@ -48,6 +48,9 @@ export class SuperheroesService {
             createdAt: 'asc',
           },
         },
+      },
+      where: {
+        nickname,
       },
     });
 
