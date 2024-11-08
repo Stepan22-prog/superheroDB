@@ -1,1 +1,1 @@
-export const STORAGE_URL = `https://storage.googleapis.com/${process.env.IMAGE_BUCKET_NAME}`;
+export const GOOGLE_STORAGE_URL = 'https://storage.googleapis.com/';
