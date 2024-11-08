@@ -3,8 +3,14 @@ import { PrismaModule } from './prisma/prisma.module';
 import { SuperheroesModule } from './superheroes/superheroes.module';
 import { ImagesModule } from './images/images.module';
 import { GoogleStorageModule } from './google-storage/google-storage.module';
-
+import { LocalStorageModule } from './local-storage/local-storage.module';
 @Module({
-  imports: [PrismaModule, SuperheroesModule, ImagesModule, GoogleStorageModule],
+  imports: [
+    PrismaModule,
+    SuperheroesModule,
+    ImagesModule,
+    GoogleStorageModule,
+    LocalStorageModule,
+  ],
 })
 export class AppModule {}

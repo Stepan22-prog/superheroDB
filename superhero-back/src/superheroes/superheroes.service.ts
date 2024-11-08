@@ -2,11 +2,14 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateSuperheroDto } from './dto/create-superhero.dto';
 import { UpdateSuperheroDto } from './dto/update-superhero.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { STORAGE_URL } from 'src/constants';
+import { ImagesService } from 'src/images/images.service';
 
 @Injectable()
 export class SuperheroesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private images: ImagesService,
+  ) {}
 
   async create(createSuperheroDto: CreateSuperheroDto) {
     const isSuperheroExists = await this.findAll({
@@ -59,7 +62,8 @@ export class SuperheroesService {
     const transformedSuperheroes = superheroes.map((superhero) => ({
       id: superhero.id,
       nickname: superhero.nickname,
-      image: superhero.images[0] && STORAGE_URL + superhero.images[0].url,
+      image:
+        superhero.images[0] && this.images.getImageURL(superhero.images[0].url),
     }));
 
     const numberOfPages = Math.ceil(numberOfSuperHeroes / numberOfItems);
@@ -87,7 +91,7 @@ export class SuperheroesService {
     const response = {
       ...superhero,
       images: superhero.images.map((image) => ({
-        url: STORAGE_URL + image.url,
+        url: this.images.getImageURL(image.url),
         id: image.id,
       })),
     };

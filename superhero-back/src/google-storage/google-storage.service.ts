@@ -2,9 +2,11 @@ import { Storage } from '@google-cloud/storage';
 import { Inject, Injectable } from '@nestjs/common';
 import { GOOGLE_STORAGE_OPTIONS } from './constants';
 import { GoogleStorageModuleOptions } from './google-storage.module';
+import { StorageService } from 'src/images/storage.interface';
+import { STORAGE_URL } from 'src/constants';
 
 @Injectable()
-export class GoogleStorageService {
+export class GoogleStorageService implements StorageService {
   private readonly bucketName: string;
   private storage = new Storage();
 
@@ -14,14 +16,18 @@ export class GoogleStorageService {
     this.bucketName = options.bucketName;
   }
 
-  async uploadFromMemory(filename: string, content: Express.Multer.File) {
+  get(filename: string) {
+    return STORAGE_URL + filename;
+  }
+
+  async upload(filename: string, content: Express.Multer.File) {
     await this.storage
       .bucket(this.bucketName)
       .file(filename)
       .save(content.buffer);
   }
 
-  async deleteFile(filename: string) {
+  async delete(filename: string) {
     await this.storage.bucket(this.bucketName).file(filename).delete();
   }
 }
