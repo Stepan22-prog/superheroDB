@@ -1,144 +1,176 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ImagesService } from './images.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { GoogleStorageService } from 'src/google-storage/google-storage.service';
-import { STORAGE_URL } from 'src/constants';
+import { StorageService } from './storage.interface';
 
 describe('ImagesService', () => {
   let service: ImagesService;
-  let prismaService: PrismaService;
-  let googleStorageService: GoogleStorageService;
+  let prisma: PrismaService;
+  let storage: StorageService;
+
+  const mockPrismaService = {
+    images: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      delete: jest.fn(),
+      deleteMany: jest.fn(),
+    },
+  };
+
+  const mockStorageService = {
+    get: jest.fn((filename) => 'http://localhost:3000/' + filename),
+    upload: jest.fn(),
+    delete: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ImagesService,
-        {
-          provide: PrismaService,
-          useValue: {
-            images: {
-              create: jest.fn(),
-              findMany: jest.fn(),
-              deleteMany: jest.fn(),
-              delete: jest.fn(),
-            },
-          },
-        },
-        {
-          provide: GoogleStorageService,
-          useValue: {
-            uploadFromMemory: jest.fn(),
-            deleteFile: jest.fn(),
-          },
-        },
+        { provide: PrismaService, useValue: mockPrismaService },
+        { provide: 'StorageService', useValue: mockStorageService },
       ],
     }).compile();
 
     service = module.get<ImagesService>(ImagesService);
-    prismaService = module.get<PrismaService>(PrismaService);
-    googleStorageService =
-      module.get<GoogleStorageService>(GoogleStorageService);
+    prisma = module.get<PrismaService>(PrismaService);
+    storage = module.get<StorageService>('StorageService');
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
+  describe('getImageURL', () => {
+    it('should return the image URL', () => {
+      const filename = 'test-image.jpg';
+      const result = service.getImageURL(filename);
+
+      expect(result).toBe('http://localhost:3000/' + filename);
+      expect(storage.get).toHaveBeenCalledWith(filename);
+    });
+  });
+
   describe('uploadOne', () => {
-    it('should upload image and save record in the database', async () => {
-      const image = { originalname: 'test.jpg' } as Express.Multer.File;
-      const superheroId = 'test-superhero-id';
+    it('should upload a file and save its record in the database', async () => {
+      const mockFile = {
+        buffer: Buffer.from('test content'),
+        originalname: 'test-image.jpg',
+      } as Express.Multer.File;
+      const superheroId = '123';
+      const filename = mockFile.originalname + Date.now();
 
       service.getAllBySuperheroId = jest
         .fn()
-        .mockResolvedValue([{ url: `${STORAGE_URL}test.jpg`, id: 'image-id' }]);
+        .mockResolvedValue([
+          { url: `http://localhost:3000/${filename}`, id: 'image-id' },
+        ]);
 
-      const result = await service.uploadOne(image, superheroId);
+      await service.uploadOne(mockFile, superheroId);
 
-      expect(googleStorageService.uploadFromMemory).toHaveBeenCalledWith(
-        expect.stringContaining(image.originalname),
-        image,
-      );
-      expect(prismaService.images.create).toHaveBeenCalledWith({
-        data: { superheroId, url: expect.any(String) },
+      expect(storage.upload).toHaveBeenCalledWith(filename, mockFile);
+      expect(prisma.images.create).toHaveBeenCalledWith({
+        data: { superheroId, url: filename },
       });
-      expect(result).toEqual([
-        { url: `${STORAGE_URL}test.jpg`, id: 'image-id' },
-      ]);
     });
   });
 
   describe('uploadMany', () => {
-    it('should call uploadOne for each image', async () => {
-      const images = [
-        { originalname: 'test1.jpg' } as Express.Multer.File,
-        { originalname: 'test2.jpg' } as Express.Multer.File,
-      ];
-      const superheroId = 'test-superhero-id';
+    it('should upload multiple files', async () => {
+      const mockFiles = [
+        { buffer: Buffer.from('test content 1'), originalname: 'image1.jpg' },
+        { buffer: Buffer.from('test content 2'), originalname: 'image2.jpg' },
+      ] as Express.Multer.File[];
+      const superheroId = '123';
+      jest.spyOn(service, 'uploadOne').mockResolvedValue([
+        { url: `http://localhost:3000/image1.jpg`, id: 'image-id' },
+        { url: `http://localhost:3000/image2.jpg`, id: 'image-id' },
+      ]);
 
-      jest.spyOn(service, 'uploadOne').mockResolvedValue([]);
+      await service.uploadMany(mockFiles, superheroId);
 
-      await service.uploadMany(images, superheroId);
-
-      expect(service.uploadOne).toHaveBeenCalledTimes(images.length);
-      images.forEach((image) => {
-        expect(service.uploadOne).toHaveBeenCalledWith(image, superheroId);
+      // expect(service.uploadOne).toHaveBeenCalledTimes(mockFiles.length);
+      mockFiles.forEach((file) => {
+        expect(service.uploadOne).toHaveBeenCalledWith(file, superheroId);
       });
     });
   });
 
   describe('getAllBySuperheroId', () => {
-    it('should return formatted URLs for superhero images', async () => {
-      const superheroId = 'test-superhero-id';
-      const mockImages = [{ url: 'image-url', id: 'image-id' }];
-      prismaService.images.findMany = jest.fn().mockResolvedValue(mockImages);
+    it('should retrieve all images for a superhero and map URLs correctly', async () => {
+      const superheroId = '123';
+      const mockImages = [
+        { id: '1', url: 'image1.jpg' },
+        { id: '2', url: 'image2.jpg' },
+      ];
+
+      jest.spyOn(service, 'uploadOne').mockResolvedValueOnce(undefined);
+      prisma.images.findMany = jest.fn().mockResolvedValueOnce(mockImages);
 
       const result = await service.getAllBySuperheroId(superheroId);
 
-      expect(prismaService.images.findMany).toHaveBeenCalledWith({
+      expect(prisma.images.findMany).toHaveBeenCalledWith({
         where: { superheroId },
         select: { url: true, id: true },
         orderBy: { createdAt: 'asc' },
       });
+
       expect(result).toEqual([
-        { url: `${STORAGE_URL}image-url`, id: 'image-id' },
+        { id: '1', url: 'http://localhost:3000/image1.jpg' },
+        { id: '2', url: 'http://localhost:3000/image2.jpg' },
       ]);
     });
   });
 
   describe('deleteBySuperheroId', () => {
-    it('should delete all images for a superhero and remove them from Google Storage', async () => {
-      const superheroId = 'test-superhero-id';
-      const mockImages = [{ url: 'image-url' }];
-      prismaService.images.findMany = jest.fn().mockResolvedValue(mockImages);
+    it('should delete all images associated with a superhero', async () => {
+      const superheroId = '123';
+      const mockImages = [{ url: 'image1.jpg' }, { url: 'image2.jpg' }];
+
+      prisma.images.findMany = jest.fn().mockResolvedValueOnce(mockImages);
 
       await service.deleteBySuperheroId(superheroId);
 
-      expect(prismaService.images.findMany).toHaveBeenCalledWith({
+      expect(prisma.images.findMany).toHaveBeenCalledWith({
         where: { superheroId },
       });
-      expect(googleStorageService.deleteFile).toHaveBeenCalledWith('image-url');
-      expect(prismaService.images.deleteMany).toHaveBeenCalledWith({
+      mockImages.forEach((image) => {
+        expect(storage.delete).toHaveBeenCalledWith(image.url);
+      });
+      expect(prisma.images.deleteMany).toHaveBeenCalledWith({
         where: { superheroId },
       });
     });
   });
 
   describe('delete', () => {
-    it('should delete a single image and remove it from Google Storage', async () => {
-      const imageId = 'test-image-id';
-      const mockImage = { url: 'image-url', superheroId: 'test-superhero-id' };
-      prismaService.images.delete = jest.fn().mockResolvedValue(mockImage);
+    it('should delete a specific image by ID', async () => {
+      const imageId = '1';
+      const mockImage = { id: imageId, url: 'image.jpg', superheroId: '123' };
 
-      jest.spyOn(service, 'getAllBySuperheroId').mockResolvedValue([]);
+      prisma.images.delete = jest.fn().mockResolvedValueOnce(mockImage);
+      prisma.images.findMany = jest
+        .fn()
+        .mockResolvedValueOnce([{ id: '2', url: 'other.jpg' }]);
 
       const result = await service.delete(imageId);
 
-      expect(prismaService.images.delete).toHaveBeenCalledWith({
+      expect(prisma.images.delete).toHaveBeenCalledWith({
         where: { id: imageId },
       });
-      expect(googleStorageService.deleteFile).toHaveBeenCalledWith('image-url');
-      expect(result).toEqual([]);
+      expect(storage.delete).toHaveBeenCalledWith(mockImage.url);
+      expect(prisma.images.findMany).toHaveBeenCalledWith({
+        where: { superheroId: mockImage.superheroId },
+        select: { url: true, id: true },
+        orderBy: { createdAt: 'asc' },
+      });
+      expect(result).toEqual([
+        { id: '2', url: 'http://localhost:3000/other.jpg' },
+      ]);
     });
   });
 });

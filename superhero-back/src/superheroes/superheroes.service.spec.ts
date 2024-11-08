@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SuperheroesService } from './superheroes.service';
 import { BadRequestException } from '@nestjs/common';
-import { STORAGE_URL } from '../constants';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ImagesService } from 'src/images/images.service';
 
 describe('SuperheroesService', () => {
   let service: SuperheroesService;
@@ -12,6 +12,14 @@ describe('SuperheroesService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SuperheroesService,
+        {
+          provide: ImagesService,
+          useValue: {
+            getImageURL: jest.fn(
+              (filename) => 'http://localhost:3000/' + filename,
+            ),
+          },
+        },
         {
           provide: PrismaService,
           useValue: {
@@ -92,7 +100,7 @@ describe('SuperheroesService', () => {
         {
           id: '1',
           nickname: 'Superman',
-          images: [{ url: '/image1.jpg', createdAt: new Date() }],
+          images: [{ url: 'image1.jpg', createdAt: new Date() }],
         },
       ]);
 
@@ -104,7 +112,7 @@ describe('SuperheroesService', () => {
           {
             id: '1',
             nickname: 'Superman',
-            image: STORAGE_URL + '/image1.jpg',
+            image: 'http://localhost:3000/image1.jpg',
           },
         ],
       });
@@ -146,7 +154,7 @@ describe('SuperheroesService', () => {
         images: [
           {
             id: '1',
-            url: STORAGE_URL + 'image1.jpg',
+            url: 'http://localhost:3000/image1.jpg',
           },
         ],
       });

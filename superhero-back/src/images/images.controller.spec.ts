@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ImagesController } from './images.controller';
 import { ImagesService } from './images.service';
 import { CreateImageDto } from './dto/create-image.dto';
-import { STORAGE_URL } from 'src/constants';
 
 describe('ImagesController', () => {
   let controller: ImagesController;
@@ -37,7 +36,9 @@ describe('ImagesController', () => {
         originalname: 'image.jpg',
         buffer: Buffer.from(''),
       } as Express.Multer.File;
-      const uploadResult = [{ id: 'image123', url: `${STORAGE_URL}image.jpg` }];
+      const uploadResult = [
+        { id: 'image123', url: 'http://localhost:3000/image.jpg' },
+      ];
 
       jest.spyOn(imagesService, 'uploadOne').mockResolvedValue(uploadResult);
 
