@@ -39,7 +39,7 @@ export default function CreateSuperhero() {
               <img src={image.url} />
             </Box>
           ))}
-          <ImageUpload handleChange={handleAdd} />
+          <ImageUpload loading={isPending} handleChange={handleAdd} />
         </Box>
         <Box display="flex" flexWrap="wrap">
           <SuperheroForm control={control} />

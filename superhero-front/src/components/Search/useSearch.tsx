@@ -23,7 +23,7 @@ export default function useSearch() {
     }
   }, [debouncedInputValue]);
 
-  function onSelect(event: React.SyntheticEvent<Element, Event>, newValue: SuperheroesShortType | null) {
+  function onSelect(_: React.SyntheticEvent<Element, Event>, newValue: SuperheroesShortType | null) {
     if (newValue) {
       navigate(`/superhero/${newValue?.id}`);
     }

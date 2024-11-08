@@ -8,7 +8,7 @@ export default function Search() {
     <Autocomplete
       sx={{ width: 300 }}
       filterOptions={(x) => x}
-      onInputChange={(event, newInputValue) => {
+      onInputChange={(_, newInputValue) => {
         setInputValue(newInputValue);
       }}
       getOptionLabel={(option) => option.nickname}

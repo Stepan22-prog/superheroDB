@@ -1,4 +1,4 @@
-import { Box, Container, Pagination } from "@mui/material";
+import { Box, Container, Pagination, Typography } from "@mui/material";
 import { superheroService } from "../../services/superhero.service";
 import Card from "../../components/Card";
 import { useEffectQuery } from "../../hooks/useEffectQuery";
@@ -22,6 +22,7 @@ export default function Main() {
       <PageTitle>All Superheroes</PageTitle>
       {loading && <Loader />}
       {error && <Error />}
+      {data && data.data.length === 0 && <Typography>No superheroes</Typography>}
       {data &&
         <>
           <Box 

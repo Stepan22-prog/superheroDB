@@ -28,14 +28,17 @@ The “Superhero database” is an application that allows us to do CRUD operati
 ## Run
 
 1.  Clone project's repo: `git clone https://github.com/Stepan22-prog/superheroDB.git`
-2.  Go to backend folder: `cd ./superhero-back`
-2.  Create an **.env** file and fill it in according to the example in **.env.example**
-3.  Run: `npm install`
-4.  To start the backend in dev mode run: `npm run start:dev`
-5.  Go to frontend folder: `cd ../superhero-front`
-6.  Create an **.env** file and fill it in according to the example in **.env.example**
-7.  Run: `npm install`
-8.  To start the frontend in dev mode run: `npm run dev`
+2.  Create MySQL database
+3.  Go to backend folder: `cd ./superhero-back`
+4.  Create an **.env** file and fill it in according to the example in **.env.example**
+5.  Run: `npm install`
+6.  Run: `npx prisma db push`
+7.  To start the backend in dev mode run: `npm run start:dev`
+8.  Go to frontend folder: `cd ../superhero-front`
+9.  Create an **.env** file and fill it in according to the example in **.env.example**
+10.  Run: `npm install`
+11.  To start the frontend in dev mode run: `npm run dev`
 
 ## Visit website
 
+https://extraordinary-pegasus-d7770e.netlify.app

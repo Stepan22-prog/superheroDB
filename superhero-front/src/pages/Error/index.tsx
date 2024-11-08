@@ -1,8 +1,12 @@
 import { Box, Button, Typography } from "@mui/material";
-import { Link, useRouteError } from "react-router-dom";
+import { isRouteErrorResponse, Link, useRouteError } from "react-router-dom";
 
 export default function ErrorPage() {
   const error = useRouteError();
+
+  const errorMessage = isRouteErrorResponse(error)
+    ? error.statusText
+    : (error as Error)?.message || "An unexpected error occurred";
 
   return (
     <Box sx={{ 
@@ -13,7 +17,7 @@ export default function ErrorPage() {
       minHeight: '100vh'
     }}>
       <Typography variant="h4" component="h1">Oops! Error has occurred!</Typography>
-      <Typography variant="h5" sx={{ my: 2 }}>{error.statusText || error.message}</Typography>
+      <Typography variant="h5" sx={{ my: 2 }}>{errorMessage}</Typography>
       <Button 
         to="/"
         component={Link}
